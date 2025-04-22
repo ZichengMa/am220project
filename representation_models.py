@@ -14,7 +14,8 @@ def compute_umap(train_data, test_data, n_components=100):
 
 import torch.nn as nn
 import torch
-# 通用Encoder类增加input_dim参数
+
+
 class Encoder(nn.Module):
     def __init__(self, input_dim, latent_dim=100):
         super().__init__()
@@ -96,34 +97,6 @@ class SimpleClassifier(nn.Module):
     def forward(self, x):
         return self.fc(x)
 
-
-class CNNClassifier(nn.Module):
-    def __init__(self, input_channels=3, num_classes=10):
-        super().__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(input_channels, 32, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.AdaptiveAvgPool2d((4, 4))
-        )
-        self.classifier = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(128 * 4 * 4, 128),
-            nn.ReLU(),
-            nn.Linear(128, num_classes)
-        )
-
-    def forward(self, x):
-        x = self.features(x)
-        x = self.classifier(x)
-        return x
 
 class MLPClassifier(nn.Module):
     def __init__(self, input_dim, hidden_dims=[512, 256, 128, 128, 64], num_classes=10):
